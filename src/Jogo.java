@@ -4,6 +4,8 @@ import Tabuleiro.Imobiliaria;
 import Tabuleiro.Imovel;
 import Tabuleiro.Tabuleiro;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -13,15 +15,15 @@ public class Jogo {
         PlayerGerenciador playerGerenciador = new PlayerGerenciador();
         Imobiliaria imobiliaria = new Imobiliaria(40);
         Tabuleiro<Imovel> tabuleiro = new Tabuleiro<Imovel>();
+        List<Jogador> jogadores = new ArrayList<>();
 
         int numeroDeRodadas = 10;
-        double saldoInicial = 5000;
+        double saldoInicial = 100000;
         int numJogadores = 0;
         int numImoveis = 0;
 
         adicionarImoveisIniciais(imobiliaria, tabuleiro);
 
-        //Configurações Iniciais
         while (true) {
             System.out.println("Bem-vindo(a) ao Banco Imobiliário!");
             System.out.println("Escolha uma opção: ");
@@ -66,28 +68,36 @@ public class Jogo {
                             System.out.println("Digite o valor do aluguel: ");
                             try {
                                 aluguelImovel = leitor.nextDouble();
-                                leitor.nextLine(); // Limpa a quebra de linha deixada por nextDouble
-                                aluguelValido = true; // Se a conversão for bem-sucedida, sai do loop
+                                leitor.nextLine();
+                                aluguelValido = true;
                             } catch (Exception e) {
                                 System.out.println("Valor inválido! Por favor, digite um número válido.");
-                                leitor.nextLine(); // Limpa o buffer de entrada
+                                leitor.nextLine();
                             }
                         }
 
                         Imovel imovel = new Imovel(nomeImovel, valorImovel, aluguelImovel, "", "Imóvel");
                         imobiliaria.cadastrarImovel(imovel);
-                        // Pergunta se o usuário deseja cadastrar outro imóvel
                         if (imobiliaria.getQuantidadeImoveis() < 40) {
-                            System.out.println("Deseja cadastrar outro imóvel? (S/N)");
-                            String resposta = leitor.nextLine().toUpperCase();
+                            String resposta;
+                            do {
+                                System.out.println("Deseja cadastrar outro imóvel? (S/N)");
+                                resposta = leitor.nextLine().toUpperCase();
+
+                                if (resposta.equals("N")){
+                                    System.out.println("Cadastro de imóveis finalizado.");
+                                    break;
+                                } else if (!resposta.equals("S")){
+                                    System.out.println("Opção inválida! Digite S para Sim ou N para não.");
+                                }
+                            } while (!resposta.equals("S") && !resposta.equals("N"));
 
                             if (resposta.equals("N")) {
-                                System.out.println("Cadastro de imóveis finalizado.");
-                                break; // Sai do loop se a resposta for "N"
+                                break;
                             }
                         } else {
                             System.out.println("Número máximo de imóveis cadastrados atingido.");
-                            break; // Sai do loop se o número máximo for atingido
+                            break;
                         }
                     }
                     break;
@@ -152,8 +162,8 @@ public class Jogo {
                             System.out.println("Você caiu na casa: " + casaAtual.getNome());
 
                             if (casaAtual.getTipo().equals("Início")){
-                                jogador.setSaldoBancario(jogador.getSaldoBancario() + 10000);
-                                System.out.println("Você recebeu RS$ 10.000 de salário.");
+                                jogador.setSaldoBancario(jogador.getSaldoBancario() + 100000);
+                                System.out.println("Você recebeu RS$ 100.000 de salário.");
                             }else if (casaAtual.getTipo().equals(jogador.getNome())){
                                 System.out.println("Você já é o proprietário desse imóvel.");
                             }else if (casaAtual.getTipo().equals("Imóvel") && casaAtual.getProprietario().isEmpty()){
@@ -173,7 +183,7 @@ public class Jogo {
                                 jogador.setSaldoBancario(jogador.getSaldoBancario() - imposto);
                                 System.out.println("Você pagou R$ " + imposto + " de imposto.\n");
                             } else if (casaAtual.getTipo().equals("\nRestituição")) {
-                                double restituicao = 1000 * 0.1;
+                                double restituicao = 100000 * 0.1;
                                 jogador.setSaldoBancario(jogador.getSaldoBancario() + restituicao);
                                 System.out.println("\nVocê recebeu R$ " + restituicao + " de restituição.");
                             }
@@ -182,7 +192,7 @@ public class Jogo {
                             System.out.println(jogador);
                         }
                     }
-                    System.out.println("O jogo acabou!");
+                    declararVencedor(jogadores);
                     break;
                 case 6:
                     System.out.println("Fechando o jogo...");
@@ -243,10 +253,31 @@ public class Jogo {
         int posicaoAtual = jogador.getPosicao();
         jogador.setPosicao(novaPosicao);
 
-        if (novaPosicao < posicaoAtual) { // Passou pelo início (deu uma volta completa)
-            jogador.setSaldoBancario(jogador.getSaldoBancario() + 55000); // Adiciona salário
+        if (novaPosicao < posicaoAtual) {
+            jogador.setSaldoBancario(jogador.getSaldoBancario() + 55000);
             System.out.println(jogador.getNome() + " passou pelo Início e recebeu R$ 1000 de salário.\n");
         }
     }
 
+    public static void declararVencedor(List<Jogador> jogadores){
+        Jogador vencedor = null;
+        int jogadoresSobreviventes = 0;
+
+        for (Jogador jogador : jogadores){
+            if (jogador.getSaldoBancario() > 0){
+                jogadoresSobreviventes++;
+                if (vencedor == null || jogador.getSaldoBancario() > vencedor.getSaldoBancario()){
+                    vencedor = jogador;
+                }
+            }
+        }
+
+        System.out.println("\nEncerramento do jogo");
+        if (jogadoresSobreviventes == 0){
+            System.out.println("Não há vencedor, todos os jogadores foram à falência.");
+        }
+        else{
+            System.out.println("O vencedor é: " + vencedor.getNome() + " com saldo de R$ " + vencedor.getSaldoBancario() + ".");
+        }
+    }
 }

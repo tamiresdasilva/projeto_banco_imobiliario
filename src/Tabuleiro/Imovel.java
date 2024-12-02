@@ -55,12 +55,9 @@ public class Imovel {
         this.proprietario = proprietario;
     }
 
+
     @Override
     public String toString() {
-        return "Tipo: " + tipo  +
-                "Nome: " + nome +
-                "\nValor do imóvel: " + valorImovel +
-                "\nValor do alugel: " + aluguel +
-                "\nProprietário(a): " + (proprietario != null ? proprietario : "Nenhum");
+        return "Tipo: " + tipo + " | Nome: " + nome + " | Valor: R$ " + valorImovel + " | Aluguel: R$ " + aluguel + " | Proprietário: " + (proprietario.isEmpty() ? "Nenhum" : proprietario);
     }
 }

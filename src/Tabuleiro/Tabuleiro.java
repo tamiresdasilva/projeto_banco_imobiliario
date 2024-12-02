@@ -14,9 +14,7 @@ public class Tabuleiro<T> {
         this.tamanho = 0;
     }
 
-    //
     public static boolean verificarInicio(Jogador jogador, int novaPosicao, int tamanhoTabuleiro) {
-        // Verifica se o jogador está na posição inicial (posição 0)
         if (novaPosicao == 0) {
             return true;
         }
@@ -68,10 +66,6 @@ public class Tabuleiro<T> {
         }
         return atual.getCasa();
     }
-
-
-
-
 
 
     public void listarCasas(){

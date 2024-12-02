@@ -20,7 +20,6 @@ public class Jogador {
     public String getNome() {
         return nome;
     }
-
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -59,10 +58,16 @@ public class Jogador {
 
     @Override
     public String toString() {
-        return "Jogador: " + nome + "\n" +
-                "Saldo: R$ " + saldoBancario + "\n" +
-                "Posição: " + posicao + "\n" +
-                "Propriedades: " + (propriedadesPossuidas.isEmpty() ? "Nenhuma" : propriedadesPossuidas);
-    }
+        StringBuilder sb = new StringBuilder();
+        sb.append("Nome: ").append(nome).append("\n").append("Saldo: R$ ").append(saldoBancario).append("\n").append("Posição: ").append(posicao).append("\n").append("Propriedades: \n");
 
+        if (propriedadesPossuidas.isEmpty()){
+            sb.append("Nenhuma\n");
+        } else{
+            for (Imovel propriedade : propriedadesPossuidas){
+                sb.append("  - ").append(propriedade).append("\n");
+            }
+        }
+        return sb.toString();
+    }
 }

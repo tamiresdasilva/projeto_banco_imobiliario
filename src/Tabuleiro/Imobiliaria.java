@@ -22,10 +22,16 @@ public class Imobiliaria {
         }
     }
 
-
-
     public Imovel[] getImoveis() {
         return imoveis;
+    }
+
+    public void setImoveis() {
+        this.imoveis = imoveis;
+    }
+
+    public void setQuantidadeImoveis(int quantidadeImoveis) {
+        this.quantidadeImoveis = quantidadeImoveis;
     }
 
     public void listarImoveis(){
